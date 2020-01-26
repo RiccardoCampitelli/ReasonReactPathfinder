@@ -20,20 +20,16 @@ let createEmptyBoard = () => {
   );
 };
 
-[@react.component]
-let make = () => {
-  let (board, setBoard) = React.useState(() => createEmptyBoard());
+let updateNode = (board, (x,y), newStatus) => {
 
-  let setNodeStatus = (~col: int, ~row: int, ~newStatus: PathFinderTypes.status, ()) => {
-    setBoard(oldBoard => {
-      let newBoard =
+   let newBoard =
         Array.mapi(
           (rowIndex, rowArray) => {
             let newRow =
-              rowIndex === row
+              rowIndex === y
                 ? Array.mapi(
                     (colIndex, node) => {
-                      let res = colIndex === col ? newStatus : node;
+                      let res = colIndex === x ? newStatus : node;
 
                       res;
                     },
@@ -43,8 +39,19 @@ let make = () => {
 
             newRow;
           },
-          oldBoard,
+          board,
         );
+
+newBoard;
+};
+
+[@react.component]
+let make = () => {
+  let (board, setBoard) = React.useState(() => createEmptyBoard());
+
+  let setNodeStatus = (~col: int, ~row: int, ~newStatus: PathFinderTypes.status, ()) => {
+    setBoard(oldBoard => {
+      let newBoard = updateNode(oldBoard, (col,row), newStatus);
       newBoard;
     });
   };

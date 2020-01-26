@@ -32,6 +32,26 @@ function createEmptyBoard(param) {
   return $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
 }
 
+function updateNode(board, param, newStatus) {
+  var y = param[1];
+  var x = param[0];
+  return $$Array.mapi((function (rowIndex, rowArray) {
+                var match = rowIndex === y;
+                if (match) {
+                  return $$Array.mapi((function (colIndex, node) {
+                                var match = colIndex === x;
+                                if (match) {
+                                  return newStatus;
+                                } else {
+                                  return node;
+                                }
+                              }), rowArray);
+                } else {
+                  return $$Array.copy(rowArray);
+                }
+              }), board);
+}
+
 function Pathfinder(Props) {
   var match = React.useState((function () {
           return $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
@@ -39,21 +59,10 @@ function Pathfinder(Props) {
   var setBoard = match[1];
   var setNodeStatus = function (col, row, newStatus, param) {
     return Curry._1(setBoard, (function (oldBoard) {
-                  return $$Array.mapi((function (rowIndex, rowArray) {
-                                var match = rowIndex === row;
-                                if (match) {
-                                  return $$Array.mapi((function (colIndex, node) {
-                                                var match = colIndex === col;
-                                                if (match) {
-                                                  return newStatus;
-                                                } else {
-                                                  return node;
-                                                }
-                                              }), rowArray);
-                                } else {
-                                  return $$Array.copy(rowArray);
-                                }
-                              }), oldBoard);
+                  return updateNode(oldBoard, /* tuple */[
+                              col,
+                              row
+                            ], newStatus);
                 }));
   };
   return React.createElement("div", {
@@ -74,5 +83,6 @@ exports.Styles = Styles;
 exports.defaultBoardHeight = defaultBoardHeight;
 exports.defaultBoardWidth = defaultBoardWidth;
 exports.createEmptyBoard = createEmptyBoard;
+exports.updateNode = updateNode;
 exports.make = make;
 /* appContainer Not a pure module */

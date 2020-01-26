@@ -56,7 +56,7 @@ function Board(Props) {
                                                       var rowIndex$1 = rowIndex;
                                                       return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Checked */Block.__(0, [true]), /* () */0);
                                                     }),
-                                                  key: String(colIndex)
+                                                  key: String(colIndex) + String(rowIndex)
                                                 });
                                     }), row);
                       }), board)));
