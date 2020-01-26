@@ -13,6 +13,8 @@ function node(status) {
         tmp = status[0] ? Css.blue : Css.papayawhip;
         break;
     case /* Path */2 :
+        tmp = status[0] ? Css.lightyellow : Css.papayawhip;
+        break;
     case /* Empty */3 :
         tmp = Css.papayawhip;
         break;
@@ -49,17 +51,26 @@ var Styles = {
   node: node
 };
 
+function preventDragHandler(_event) {
+  _event.preventDefault();
+  return /* () */0;
+}
+
 function $$Node(Props) {
   var status = Props.status;
   var onClick = Props.onClick;
+  var onMouseEnter = Props.onMouseEnter;
   return React.createElement("div", {
               className: node(status),
-              onClick: onClick
+              onClick: onClick,
+              onDragStart: preventDragHandler,
+              onMouseEnter: onMouseEnter
             });
 }
 
 var make = $$Node;
 
 exports.Styles = Styles;
+exports.preventDragHandler = preventDragHandler;
 exports.make = make;
 /* Css Not a pure module */
