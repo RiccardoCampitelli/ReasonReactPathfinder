@@ -57,7 +57,7 @@ function Pathfinder(Props) {
           return $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
         }));
   var setBoard = match[1];
-  var setNodeStatus = function (col, row, newStatus, param) {
+  var setNodeStatus = function (col, row, newStatus) {
     return Curry._1(setBoard, (function (oldBoard) {
                   return updateNode(oldBoard, /* tuple */[
                               col,

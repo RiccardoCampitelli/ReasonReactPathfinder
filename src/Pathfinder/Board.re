@@ -18,26 +18,10 @@ let make = (~board, ~setNodeStatus) => {
       (_event, colIndex, rowIndex, currentStatus: PathFinderTypes.status) => {
     switch (currentStatus) {
     | Wall(true) =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=PathFinderTypes.Empty(true),
-        (),
-      )
+      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Empty(true))
     | Empty(true) =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=PathFinderTypes.Wall(true),
-        (),
-      )
-    | _ =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=currentStatus,
-        (),
-      )
+      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Wall(true))
+    | _ => setNodeStatus(colIndex, rowIndex, currentStatus)
     };
   };
 
@@ -51,26 +35,10 @@ let make = (~board, ~setNodeStatus) => {
 
     switch (currentStatus, isMousePressed) {
     | (Wall(true), true) =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=PathFinderTypes.Empty(true),
-        (),
-      )
+      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Empty(true))
     | (Empty(true), true) =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=PathFinderTypes.Wall(true),
-        (),
-      )
-    | (_, false) =>
-      setNodeStatus(
-        ~col=colIndex,
-        ~row=rowIndex,
-        ~newStatus=currentStatus,
-        (),
-      )
+      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Wall(true))
+    | (_, false) => setNodeStatus(colIndex, rowIndex, currentStatus)
     | (_, _) => ()
     };
   };

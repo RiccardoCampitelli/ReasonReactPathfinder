@@ -58,20 +58,21 @@ function Board(Props) {
                                                       switch (currentStatus.tag | 0) {
                                                         case /* Wall */1 :
                                                             if (currentStatus[0]) {
-                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]), /* () */0);
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]));
+                                                            } else {
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                             }
-                                                            break;
                                                         case /* Checked */0 :
                                                         case /* Path */2 :
-                                                            break;
+                                                            return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                         case /* Empty */3 :
                                                             if (currentStatus[0]) {
-                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]), /* () */0);
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
+                                                            } else {
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                             }
-                                                            break;
                                                         
                                                       }
-                                                      return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, currentStatus, /* () */0);
                                                     }),
                                                   onMouseEnter: (function ($$event) {
                                                       var $$event$1 = $$event;
@@ -85,7 +86,7 @@ function Board(Props) {
                                                       switch (currentStatus.tag | 0) {
                                                         case /* Wall */1 :
                                                             if (currentStatus[0] && isMousePressed) {
-                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]), /* () */0);
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]));
                                                             }
                                                             break;
                                                         case /* Checked */0 :
@@ -93,7 +94,7 @@ function Board(Props) {
                                                             break;
                                                         case /* Empty */3 :
                                                             if (currentStatus[0] && isMousePressed) {
-                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]), /* () */0);
+                                                              return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
                                                             }
                                                             break;
                                                         
@@ -101,7 +102,7 @@ function Board(Props) {
                                                       if (isMousePressed) {
                                                         return /* () */0;
                                                       } else {
-                                                        return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, currentStatus, /* () */0);
+                                                        return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                       }
                                                     }),
                                                   key: String(colIndex) + String(rowIndex)

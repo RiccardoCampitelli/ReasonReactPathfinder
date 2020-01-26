@@ -49,7 +49,7 @@ newBoard;
 let make = () => {
   let (board, setBoard) = React.useState(() => createEmptyBoard());
 
-  let setNodeStatus = (~col: int, ~row: int, ~newStatus: PathFinderTypes.status, ()) => {
+  let setNodeStatus = (col: int, row: int, newStatus: PathFinderTypes.status) => {
     setBoard(oldBoard => {
       let newBoard = updateNode(oldBoard, (col,row), newStatus);
       newBoard;
