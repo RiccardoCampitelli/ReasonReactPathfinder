@@ -14,13 +14,31 @@ module Styles = {
 
 [@react.component]
 let make = (~board, ~setNodeStatus) => {
-  let setNodeStatusToChecked = (_event, colIndex, rowIndex) => {
-    setNodeStatus(
-      ~col=colIndex,
-      ~row=rowIndex,
-      ~newStatus=PathFinderTypes.Wall(true),
-      (),
-    );
+  let toggleNodeStatus =
+      (_event, colIndex, rowIndex, currentStatus: PathFinderTypes.status) => {
+    switch (currentStatus) {
+    | Wall(true) =>
+      setNodeStatus(
+        ~col=colIndex,
+        ~row=rowIndex,
+        ~newStatus=PathFinderTypes.Empty(true),
+        (),
+      )
+    | Empty(true) =>
+      setNodeStatus(
+        ~col=colIndex,
+        ~row=rowIndex,
+        ~newStatus=PathFinderTypes.Wall(true),
+        (),
+      )
+    | _ =>
+      setNodeStatus(
+        ~col=colIndex,
+        ~row=rowIndex,
+        ~newStatus=currentStatus,
+        (),
+      )
+    };
   };
 
   let handleMouseEnter =
@@ -69,7 +87,7 @@ let make = (~board, ~setNodeStatus) => {
                      key={colIndex->string_of_int ++ rowIndex->string_of_int}
                      status
                      onClick={__x =>
-                       setNodeStatusToChecked(__x, colIndex, rowIndex)
+                       toggleNodeStatus(__x, colIndex, rowIndex, status)
                      }
                      onMouseEnter={event =>
                        handleMouseEnter(event, colIndex, rowIndex, status)

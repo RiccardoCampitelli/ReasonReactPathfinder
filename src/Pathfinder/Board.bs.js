@@ -54,7 +54,24 @@ function Board(Props) {
                                                   onClick: (function (__x) {
                                                       var colIndex$1 = colIndex;
                                                       var rowIndex$1 = rowIndex;
-                                                      return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]), /* () */0);
+                                                      var currentStatus = status;
+                                                      switch (currentStatus.tag | 0) {
+                                                        case /* Wall */1 :
+                                                            if (currentStatus[0]) {
+                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]), /* () */0);
+                                                            }
+                                                            break;
+                                                        case /* Checked */0 :
+                                                        case /* Path */2 :
+                                                            break;
+                                                        case /* Empty */3 :
+                                                            if (currentStatus[0]) {
+                                                              return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]), /* () */0);
+                                                            }
+                                                            break;
+                                                        
+                                                      }
+                                                      return Curry._4(setNodeStatus, colIndex$1, rowIndex$1, currentStatus, /* () */0);
                                                     }),
                                                   onMouseEnter: (function ($$event) {
                                                       var $$event$1 = $$event;
