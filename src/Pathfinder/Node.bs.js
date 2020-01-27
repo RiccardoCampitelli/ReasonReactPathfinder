@@ -18,6 +18,12 @@ function node(status) {
     case /* Empty */3 :
         tmp = Css.papayawhip;
         break;
+    case /* StartNode */4 :
+        tmp = status[0] ? Css.lightgreen : Css.papayawhip;
+        break;
+    case /* EndNode */5 :
+        tmp = status[0] ? Css.purple : Css.papayawhip;
+        break;
     
   }
   return Css.style(/* :: */[

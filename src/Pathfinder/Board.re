@@ -52,7 +52,11 @@ let make = (~board, ~setNodeStatus) => {
              ->Array.mapi(
                  (colIndex, status) => {
                    <Node
-                     key={colIndex->string_of_int ++ rowIndex->string_of_int}
+                     key={
+                       colIndex->string_of_int
+                       ++ "-"
+                       ++ rowIndex->string_of_int
+                     }
                      status
                      onClick={__x =>
                        toggleNodeStatus(__x, colIndex, rowIndex, status)

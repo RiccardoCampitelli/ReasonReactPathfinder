@@ -11,6 +11,8 @@ module Styles = {
         | Wall(true) => blue
         | Checked(true) => darkblue
         | Path(true) => lightyellow
+        | StartNode(true) => lightgreen
+        | EndNode(true) => purple
         | _ => papayawhip
         },
       ),

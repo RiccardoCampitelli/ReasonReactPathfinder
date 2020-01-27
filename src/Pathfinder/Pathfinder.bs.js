@@ -5,6 +5,7 @@ var $$Array = require("bs-platform/lib/js/array.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Caml_array = require("bs-platform/lib/js/caml_array.js");
 var Board$ReasonReactExamples = require("./Board.bs.js");
 
 var appContainer = Css.style(/* :: */[
@@ -29,7 +30,10 @@ var Styles = {
 };
 
 function createEmptyBoard(param) {
-  return $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
+  var initialBoard = $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
+  Caml_array.caml_array_set(Caml_array.caml_array_get(initialBoard, 8), 4, /* StartNode */Block.__(4, [true]));
+  Caml_array.caml_array_set(Caml_array.caml_array_get(initialBoard, 9), 14, /* EndNode */Block.__(5, [true]));
+  return initialBoard;
 }
 
 function updateNode(board, param, newStatus) {
@@ -54,7 +58,7 @@ function updateNode(board, param, newStatus) {
 
 function Pathfinder(Props) {
   var match = React.useState((function () {
-          return $$Array.make_matrix(20, 20, /* Empty */Block.__(3, [true]));
+          return createEmptyBoard(/* () */0);
         }));
   var setBoard = match[1];
   var setNodeStatus = function (col, row, newStatus) {

@@ -62,16 +62,14 @@ function Board(Props) {
                                                             } else {
                                                               return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                             }
-                                                        case /* Checked */0 :
-                                                        case /* Path */2 :
-                                                            return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                         case /* Empty */3 :
                                                             if (currentStatus[0]) {
                                                               return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
                                                             } else {
                                                               return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                             }
-                                                        
+                                                        default:
+                                                          return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                       }
                                                     }),
                                                   onMouseEnter: (function ($$event) {
@@ -89,15 +87,13 @@ function Board(Props) {
                                                               return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]));
                                                             }
                                                             break;
-                                                        case /* Checked */0 :
-                                                        case /* Path */2 :
-                                                            break;
                                                         case /* Empty */3 :
                                                             if (currentStatus[0] && isMousePressed) {
                                                               return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
                                                             }
                                                             break;
-                                                        
+                                                        default:
+                                                          
                                                       }
                                                       if (isMousePressed) {
                                                         return /* () */0;
@@ -105,7 +101,7 @@ function Board(Props) {
                                                         return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                       }
                                                     }),
-                                                  key: String(colIndex) + String(rowIndex)
+                                                  key: String(colIndex) + ("-" + String(rowIndex))
                                                 });
                                     }), row);
                       }), board)));
