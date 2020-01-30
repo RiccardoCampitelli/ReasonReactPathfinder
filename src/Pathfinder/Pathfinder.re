@@ -1,3 +1,4 @@
+open PathFinderTypes;
 module Styles = {
   open Css;
 
@@ -14,14 +15,10 @@ let defaultBoardWidth = 20;
 
 let createEmptyBoard = () => {
   let initialBoard =
-    Array.make_matrix(
-      defaultBoardHeight,
-      defaultBoardWidth,
-      PathFinderTypes.Empty(true),
-    );
+    Array.make_matrix(defaultBoardHeight, defaultBoardWidth, Empty(true));
 
-  initialBoard[8][4] = PathFinderTypes.StartNode(true);
-  initialBoard[9][14] = PathFinderTypes.EndNode(true);
+  initialBoard[8][4] = StartNode(true);
+  initialBoard[9][14] = EndNode(true);
 
   initialBoard;
 };
@@ -50,11 +47,45 @@ let updateNode = (board, (x, y), newStatus) => {
   newBoard;
 };
 
+let rec findInArray = (arr, i, pred) =>
+  if (i >= Array.length(arr)) {
+    None;
+  } else if (pred(arr[i])) {
+    Some(i);
+  } else {
+    findInArray(arr, i + 1, pred);
+  };
+
+let getStartNodeCoords = (board: array(array(status))) => {
+  let colIndex = ref(0);
+
+  let rowIndex =
+  findInArray(
+    board,
+    0,
+    col => {
+      let isInCol =
+        findInArray(col, 0, node => {
+          node == StartNode(true) ? true : false
+        });
+
+      switch (isInCol) {
+      | None => false
+      | Some(value) =>
+        colIndex := value;
+        true;
+      };
+    },
+  );
+
+  (rowIndex, colIndex^)
+};
+
 [@react.component]
 let make = () => {
   let (board, setBoard) = React.useState(() => createEmptyBoard());
 
-  let setNodeStatus = (col: int, row: int, newStatus: PathFinderTypes.status) => {
+  let setNodeStatus = (col: int, row: int, newStatus: status) => {
     setBoard(oldBoard => {
       let newBoard = updateNode(oldBoard, (col, row), newStatus);
       newBoard;
@@ -65,9 +96,14 @@ let make = () => {
     setBoard(_ => createEmptyBoard());
   };
 
+  let findStartNode = _ => {
+    Js.log(getStartNodeCoords(board));
+  };
+
   <div className=Styles.appContainer>
     <div>
       <button onClick=resetBoard> "Reset board"->React.string </button>
+      <button onClick=findStartNode> "Test"->React.string </button>
     </div>
     <Board board setNodeStatus />
   </div>;

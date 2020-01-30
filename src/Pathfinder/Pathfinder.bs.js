@@ -5,6 +5,7 @@ var $$Array = require("bs-platform/lib/js/array.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Caml_array = require("bs-platform/lib/js/caml_array.js");
 var Board$ReasonReactExamples = require("./Board.bs.js");
 
@@ -56,11 +57,52 @@ function updateNode(board, param, newStatus) {
               }), board);
 }
 
+function findInArray(arr, _i, pred) {
+  while(true) {
+    var i = _i;
+    if (i >= arr.length) {
+      return ;
+    } else if (Curry._1(pred, Caml_array.caml_array_get(arr, i))) {
+      return i;
+    } else {
+      _i = i + 1 | 0;
+      continue ;
+    }
+  };
+}
+
+function getStartNodeCoords(board) {
+  var colIndex = {
+    contents: 0
+  };
+  var rowIndex = findInArray(board, 0, (function (col) {
+          var isInCol = findInArray(col, 0, (function (node) {
+                  var match = Caml_obj.caml_equal(node, /* StartNode */Block.__(4, [true]));
+                  if (match) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }));
+          if (isInCol !== undefined) {
+            colIndex.contents = isInCol;
+            return true;
+          } else {
+            return false;
+          }
+        }));
+  return /* tuple */[
+          rowIndex,
+          colIndex.contents
+        ];
+}
+
 function Pathfinder(Props) {
   var match = React.useState((function () {
           return createEmptyBoard(/* () */0);
         }));
   var setBoard = match[1];
+  var board = match[0];
   var setNodeStatus = function (col, row, newStatus) {
     return Curry._1(setBoard, (function (oldBoard) {
                   return updateNode(oldBoard, /* tuple */[
@@ -74,12 +116,18 @@ function Pathfinder(Props) {
                   return createEmptyBoard(/* () */0);
                 }));
   };
+  var findStartNode = function (param) {
+    console.log(getStartNodeCoords(board));
+    return /* () */0;
+  };
   return React.createElement("div", {
               className: appContainer
             }, React.createElement("div", undefined, React.createElement("button", {
                       onClick: resetBoard
-                    }, "Reset board")), React.createElement(Board$ReasonReactExamples.make, {
-                  board: match[0],
+                    }, "Reset board"), React.createElement("button", {
+                      onClick: findStartNode
+                    }, "Test")), React.createElement(Board$ReasonReactExamples.make, {
+                  board: board,
                   setNodeStatus: setNodeStatus
                 }));
 }
@@ -95,5 +143,7 @@ exports.defaultBoardHeight = defaultBoardHeight;
 exports.defaultBoardWidth = defaultBoardWidth;
 exports.createEmptyBoard = createEmptyBoard;
 exports.updateNode = updateNode;
+exports.findInArray = findInArray;
+exports.getStartNodeCoords = getStartNodeCoords;
 exports.make = make;
 /* appContainer Not a pure module */

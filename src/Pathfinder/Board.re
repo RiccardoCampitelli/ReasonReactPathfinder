@@ -38,9 +38,9 @@ let make = (~board, ~setNodeStatus) => {
       clickedNode == StartNode(true) || clickedNode == EndNode(true);
 
     switch (currentStatus, isMousePressed, wasStartOrEndNodeClicked) {
-    | (_, true, true) => setNodeStatus(colIndex, rowIndex, clickedNode)
-    | (Wall(true), true, _) =>
+    | (Wall(true), true, false) =>
       setNodeStatus(colIndex, rowIndex, Empty(true))
+    | (Empty(true), true, true) => setNodeStatus(colIndex, rowIndex, clickedNode)
     | (Empty(true), true, _) =>
       setNodeStatus(colIndex, rowIndex, Wall(true))
     | (_, false, _) => setNodeStatus(colIndex, rowIndex, currentStatus)
@@ -48,17 +48,18 @@ let make = (~board, ~setNodeStatus) => {
     };
   };
 
-  let handleMouseLeave = (event, colIndex, rowIndex) => {
+  let handleMouseLeave = (event, colIndex, rowIndex, currentStatus: status) => {
     ReactEvent.Mouse.persist(event);
-    // Js.log(event->ReactEvent.Mouse.buttons);
     let buttons = event->ReactEvent.Mouse.buttons;
     let isMousePressed = buttons === 1;
 
     let wasStartOrEndNodeClicked =
       clickedNode == StartNode(true) || clickedNode == EndNode(true);
 
-    if (isMousePressed && wasStartOrEndNodeClicked) {
-      setNodeStatus(colIndex, rowIndex, Empty(true));
+    switch (currentStatus, isMousePressed, wasStartOrEndNodeClicked) {
+    | (Wall(true), true, true) => ()
+    | (_, true, true) => setNodeStatus(colIndex, rowIndex, Empty(true))
+    | (_, _, _) => ()
     };
   };
 
@@ -84,7 +85,7 @@ let make = (~board, ~setNodeStatus) => {
                        handleMouseEnter(event, colIndex, rowIndex, status)
                      }
                      onMouseLeave={event =>
-                       handleMouseLeave(event, colIndex, rowIndex)
+                       handleMouseLeave(event, colIndex, rowIndex, status)
                      }
                    />
                  },
