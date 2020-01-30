@@ -69,9 +69,16 @@ function Pathfinder(Props) {
                             ], newStatus);
                 }));
   };
+  var resetBoard = function (_event) {
+    return Curry._1(setBoard, (function (param) {
+                  return createEmptyBoard(/* () */0);
+                }));
+  };
   return React.createElement("div", {
               className: appContainer
-            }, React.createElement(Board$ReasonReactExamples.make, {
+            }, React.createElement("div", undefined, React.createElement("button", {
+                      onClick: resetBoard
+                    }, "Reset board")), React.createElement(Board$ReasonReactExamples.make, {
                   board: match[0],
                   setNodeStatus: setNodeStatus
                 }));

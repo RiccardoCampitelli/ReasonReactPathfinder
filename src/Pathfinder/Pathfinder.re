@@ -50,8 +50,6 @@ let updateNode = (board, (x, y), newStatus) => {
   newBoard;
 };
 
-
-
 [@react.component]
 let make = () => {
   let (board, setBoard) = React.useState(() => createEmptyBoard());
@@ -63,5 +61,14 @@ let make = () => {
     });
   };
 
-  <div className=Styles.appContainer> <Board board setNodeStatus /> </div>;
+  let resetBoard = _event => {
+    setBoard(_ => createEmptyBoard());
+  };
+
+  <div className=Styles.appContainer>
+    <div>
+      <button onClick=resetBoard> "Reset board"->React.string </button>
+    </div>
+    <Board board setNodeStatus />
+  </div>;
 };
