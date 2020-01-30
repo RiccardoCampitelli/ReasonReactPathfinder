@@ -50,6 +50,8 @@ let updateNode = (board, (x, y), newStatus) => {
   newBoard;
 };
 
+
+
 [@react.component]
 let make = () => {
   let (board, setBoard) = React.useState(() => createEmptyBoard());

@@ -25,11 +25,12 @@ let preventDragHandler = (_event) => {
 };
 
 [@react.component]
-let make = (~status, ~onClick, ~onMouseEnter) => {
+let make = (~status, ~onMouseDown, ~onMouseEnter, ~onMouseLeave) => {
   <div
     className={Styles.node(status)}
-    onClick
+    onMouseDown
     onMouseEnter
+    onMouseLeave
     onDragStart={preventDragHandler}
   />;
 };

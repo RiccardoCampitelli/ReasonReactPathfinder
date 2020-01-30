@@ -64,13 +64,15 @@ function preventDragHandler(_event) {
 
 function $$Node(Props) {
   var status = Props.status;
-  var onClick = Props.onClick;
+  var onMouseDown = Props.onMouseDown;
   var onMouseEnter = Props.onMouseEnter;
+  var onMouseLeave = Props.onMouseLeave;
   return React.createElement("div", {
               className: node(status),
-              onClick: onClick,
               onDragStart: preventDragHandler,
-              onMouseEnter: onMouseEnter
+              onMouseDown: onMouseDown,
+              onMouseEnter: onMouseEnter,
+              onMouseLeave: onMouseLeave
             });
 }
 

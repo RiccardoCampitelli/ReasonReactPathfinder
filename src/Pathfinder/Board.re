@@ -1,3 +1,5 @@
+open PathFinderTypes;
+
 module Styles = {
   open Css;
 
@@ -14,33 +16,61 @@ module Styles = {
 
 [@react.component]
 let make = (~board, ~setNodeStatus) => {
-  let toggleNodeStatus =
-      (_event, colIndex, rowIndex, currentStatus: PathFinderTypes.status) => {
+  let (clickedNode, setClickedNode) = React.useState(() => Empty(true));
+
+  let handleMouseDown = (_event, colIndex, rowIndex, currentStatus: status) => {
+    Js.log(currentStatus);
+    setClickedNode(_ => currentStatus);
+
     switch (currentStatus) {
-    | Wall(true) =>
-      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Empty(true))
-    | Empty(true) =>
-      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Wall(true))
+    | Wall(true) => setNodeStatus(colIndex, rowIndex, Empty(true))
+    | Empty(true) => setNodeStatus(colIndex, rowIndex, Wall(true))
     | _ => setNodeStatus(colIndex, rowIndex, currentStatus)
     };
   };
 
-  let handleMouseEnter =
-      (event, colIndex, rowIndex, currentStatus: PathFinderTypes.status) => {
-    ReactEvent.Mouse.persist(event);
-    Js.log(event->ReactEvent.Mouse.buttons);
-    let buttons = event->ReactEvent.Mouse.buttons;
-    let isMousePressed = buttons === 1 || buttons === 2;
-    //TODO: Check ReactEvent.Mouse.buttons and get rid of isMouseDown state
 
-    switch (currentStatus, isMousePressed) {
-    | (Wall(true), true) =>
-      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Empty(true))
-    | (Empty(true), true) =>
-      setNodeStatus(colIndex, rowIndex, PathFinderTypes.Wall(true))
-    | (_, false) => setNodeStatus(colIndex, rowIndex, currentStatus)
-    | (_, _) => ()
+  let handleMouseEnter = (event, colIndex, rowIndex, currentStatus: status) => {
+    ReactEvent.Mouse.persist(event);
+    // Js.log(event->ReactEvent.Mouse.buttons);
+    let buttons = event->ReactEvent.Mouse.buttons;
+    let isMousePressed = buttons === 1;
+
+    let wasStartOrEndNodeClicked =
+      clickedNode == StartNode(true) || clickedNode == EndNode(true);
+
+    if (isMousePressed && wasStartOrEndNodeClicked) {
+      {
+        setNodeStatus(colIndex, rowIndex, clickedNode)
+      };
+    } else {
+      switch (currentStatus, isMousePressed) {
+      | (Wall(true), true) =>
+        setNodeStatus(colIndex, rowIndex, Empty(true))
+      | (Empty(true), true) =>
+        setNodeStatus(colIndex, rowIndex, Wall(true))
+      | (_, false) => setNodeStatus(colIndex, rowIndex, currentStatus)
+      | (_, _) => ()
+      };
     };
+  };
+
+  let handleMouseLeave = (event, colIndex, rowIndex) => {
+
+    ReactEvent.Mouse.persist(event);
+    // Js.log(event->ReactEvent.Mouse.buttons);
+    let buttons = event->ReactEvent.Mouse.buttons;
+    let isMousePressed = buttons === 1;
+
+     let wasStartOrEndNodeClicked =
+      clickedNode == StartNode(true) || clickedNode == EndNode(true);
+
+    if (isMousePressed && wasStartOrEndNodeClicked) {
+      {
+        setNodeStatus(colIndex, rowIndex, Empty(true))
+      };
+    }
+
   };
 
   <div className=Styles.gridContainer>
@@ -58,11 +88,16 @@ let make = (~board, ~setNodeStatus) => {
                        ++ rowIndex->string_of_int
                      }
                      status
-                     onClick={__x =>
-                       toggleNodeStatus(__x, colIndex, rowIndex, status)
+                     onMouseDown={__x =>
+                       handleMouseDown(__x, colIndex, rowIndex, status)
                      }
+                     
                      onMouseEnter={event =>
                        handleMouseEnter(event, colIndex, rowIndex, status)
+                     }
+
+                     onMouseLeave={event => 
+                        handleMouseLeave(event, colIndex, rowIndex)
                      }
                    />
                  },
