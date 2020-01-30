@@ -61,7 +61,6 @@ function Board(Props) {
                                                       var colIndex$1 = colIndex;
                                                       var rowIndex$1 = rowIndex;
                                                       var currentStatus = status;
-                                                      console.log(currentStatus);
                                                       Curry._1(setClickedNode, (function (param) {
                                                               return currentStatus;
                                                             }));
@@ -91,28 +90,29 @@ function Board(Props) {
                                                       var buttons = $$event$1.buttons;
                                                       var isMousePressed = buttons === 1;
                                                       var wasStartOrEndNodeClicked = Caml_obj.caml_equal(clickedNode, /* StartNode */Block.__(4, [true])) || Caml_obj.caml_equal(clickedNode, /* EndNode */Block.__(5, [true]));
-                                                      if (isMousePressed && wasStartOrEndNodeClicked) {
-                                                        return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, clickedNode);
-                                                      } else {
-                                                        switch (currentStatus.tag | 0) {
-                                                          case /* Wall */1 :
-                                                              if (currentStatus[0] && isMousePressed) {
-                                                                return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]));
-                                                              }
-                                                              break;
-                                                          case /* Empty */3 :
-                                                              if (currentStatus[0] && isMousePressed) {
-                                                                return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
-                                                              }
-                                                              break;
-                                                          default:
-                                                            
-                                                        }
-                                                        if (isMousePressed) {
-                                                          return /* () */0;
+                                                      if (isMousePressed) {
+                                                        if (wasStartOrEndNodeClicked) {
+                                                          return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, clickedNode);
                                                         } else {
-                                                          return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
+                                                          switch (currentStatus.tag | 0) {
+                                                            case /* Wall */1 :
+                                                                if (currentStatus[0]) {
+                                                                  return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Empty */Block.__(3, [true]));
+                                                                } else {
+                                                                  return /* () */0;
+                                                                }
+                                                            case /* Empty */3 :
+                                                                if (currentStatus[0]) {
+                                                                  return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, /* Wall */Block.__(1, [true]));
+                                                                } else {
+                                                                  return /* () */0;
+                                                                }
+                                                            default:
+                                                              return /* () */0;
+                                                          }
                                                         }
+                                                      } else {
+                                                        return Curry._3(setNodeStatus, colIndex$1, rowIndex$1, currentStatus);
                                                       }
                                                     }),
                                                   onMouseLeave: (function ($$event) {

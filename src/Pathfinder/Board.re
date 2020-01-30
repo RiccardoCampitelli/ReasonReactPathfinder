@@ -19,7 +19,6 @@ let make = (~board, ~setNodeStatus) => {
   let (clickedNode, setClickedNode) = React.useState(() => Empty(true));
 
   let handleMouseDown = (_event, colIndex, rowIndex, currentStatus: status) => {
-    Js.log(currentStatus);
     setClickedNode(_ => currentStatus);
 
     switch (currentStatus) {
@@ -29,8 +28,27 @@ let make = (~board, ~setNodeStatus) => {
     };
   };
 
-
   let handleMouseEnter = (event, colIndex, rowIndex, currentStatus: status) => {
+    ReactEvent.Mouse.persist(event);
+
+    let buttons = event->ReactEvent.Mouse.buttons;
+    let isMousePressed = buttons === 1;
+
+    let wasStartOrEndNodeClicked =
+      clickedNode == StartNode(true) || clickedNode == EndNode(true);
+
+    switch (currentStatus, isMousePressed, wasStartOrEndNodeClicked) {
+    | (_, true, true) => setNodeStatus(colIndex, rowIndex, clickedNode)
+    | (Wall(true), true, _) =>
+      setNodeStatus(colIndex, rowIndex, Empty(true))
+    | (Empty(true), true, _) =>
+      setNodeStatus(colIndex, rowIndex, Wall(true))
+    | (_, false, _) => setNodeStatus(colIndex, rowIndex, currentStatus)
+    | (_, _, _) => ()
+    };
+  };
+
+  let handleMouseLeave = (event, colIndex, rowIndex) => {
     ReactEvent.Mouse.persist(event);
     // Js.log(event->ReactEvent.Mouse.buttons);
     let buttons = event->ReactEvent.Mouse.buttons;
@@ -40,37 +58,8 @@ let make = (~board, ~setNodeStatus) => {
       clickedNode == StartNode(true) || clickedNode == EndNode(true);
 
     if (isMousePressed && wasStartOrEndNodeClicked) {
-      {
-        setNodeStatus(colIndex, rowIndex, clickedNode)
-      };
-    } else {
-      switch (currentStatus, isMousePressed) {
-      | (Wall(true), true) =>
-        setNodeStatus(colIndex, rowIndex, Empty(true))
-      | (Empty(true), true) =>
-        setNodeStatus(colIndex, rowIndex, Wall(true))
-      | (_, false) => setNodeStatus(colIndex, rowIndex, currentStatus)
-      | (_, _) => ()
-      };
+      setNodeStatus(colIndex, rowIndex, Empty(true));
     };
-  };
-
-  let handleMouseLeave = (event, colIndex, rowIndex) => {
-
-    ReactEvent.Mouse.persist(event);
-    // Js.log(event->ReactEvent.Mouse.buttons);
-    let buttons = event->ReactEvent.Mouse.buttons;
-    let isMousePressed = buttons === 1;
-
-     let wasStartOrEndNodeClicked =
-      clickedNode == StartNode(true) || clickedNode == EndNode(true);
-
-    if (isMousePressed && wasStartOrEndNodeClicked) {
-      {
-        setNodeStatus(colIndex, rowIndex, Empty(true))
-      };
-    }
-
   };
 
   <div className=Styles.gridContainer>
@@ -91,13 +80,11 @@ let make = (~board, ~setNodeStatus) => {
                      onMouseDown={__x =>
                        handleMouseDown(__x, colIndex, rowIndex, status)
                      }
-                     
                      onMouseEnter={event =>
                        handleMouseEnter(event, colIndex, rowIndex, status)
                      }
-
-                     onMouseLeave={event => 
-                        handleMouseLeave(event, colIndex, rowIndex)
+                     onMouseLeave={event =>
+                       handleMouseLeave(event, colIndex, rowIndex)
                      }
                    />
                  },
