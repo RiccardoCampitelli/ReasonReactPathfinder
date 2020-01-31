@@ -47,38 +47,37 @@ let updateNode = (board, (x, y), newStatus) => {
   newBoard;
 };
 
-let rec findInArray = (arr, i, pred) =>
-  if (i >= Array.length(arr)) {
+// let rec findInArray = (arr, i, pred) =>
+//   if (i >= Array.length(arr)) {
+//     None;
+//   } else if (pred(arr[i])) {
+//     Some(i);
+//   } else {
+//     findInArray(arr, i + 1, pred);
+//   };
+
+let rec findInMatrix = (matrix, i, j, pred) =>
+  if (i >= Array.length(matrix) && j >= Array.length(matrix)) {
     None;
-  } else if (pred(arr[i])) {
-    Some(i);
+  } else if (pred(matrix[i][j])) {
+    Some((i, j));
   } else {
-    findInArray(arr, i + 1, pred);
+    let colIndexInRange = i < Array.length(matrix) - 1;
+    let rowIndexInRange = j < Array.length(matrix) - 1;
+
+    switch (colIndexInRange, rowIndexInRange) {
+    | (true, true) => findInMatrix(matrix, i + 1, j, pred)
+    | (false, true) => findInMatrix(matrix, 0, j + 1, pred)
+    | (_, _) => None
+    };
   };
 
 let getStartNodeCoords = (board: array(array(status))) => {
-  let colIndex = ref(0);
+  findInMatrix(board, 0, 0, value => value == StartNode(true));
+};
 
-  let rowIndex =
-  findInArray(
-    board,
-    0,
-    col => {
-      let isInCol =
-        findInArray(col, 0, node => {
-          node == StartNode(true) ? true : false
-        });
-
-      switch (isInCol) {
-      | None => false
-      | Some(value) =>
-        colIndex := value;
-        true;
-      };
-    },
-  );
-
-  (rowIndex, colIndex^)
+let getEndNodeCoords = (board: array(array(status))) => {
+  findInMatrix(board, 0, 0, value => value == EndNode(true));
 };
 
 [@react.component]
@@ -96,14 +95,18 @@ let make = () => {
     setBoard(_ => createEmptyBoard());
   };
 
-  let findStartNode = _ => {
-    Js.log(getStartNodeCoords(board));
+  let test = _ => {
+    let startNode = getStartNodeCoords(board);
+    let endNode = getEndNodeCoords(board);
+
+    Js.log((startNode, endNode))
+
   };
 
   <div className=Styles.appContainer>
     <div>
       <button onClick=resetBoard> "Reset board"->React.string </button>
-      <button onClick=findStartNode> "Test"->React.string </button>
+      <button onClick=test> "Test"->React.string </button>
     </div>
     <Board board setNodeStatus />
   </div>;

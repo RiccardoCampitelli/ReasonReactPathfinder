@@ -57,44 +57,48 @@ function updateNode(board, param, newStatus) {
               }), board);
 }
 
-function findInArray(arr, _i, pred) {
+function findInMatrix(matrix, _i, _j, pred) {
   while(true) {
+    var j = _j;
     var i = _i;
-    if (i >= arr.length) {
+    if (i >= matrix.length && j >= matrix.length) {
       return ;
-    } else if (Curry._1(pred, Caml_array.caml_array_get(arr, i))) {
-      return i;
+    } else if (Curry._1(pred, Caml_array.caml_array_get(Caml_array.caml_array_get(matrix, i), j))) {
+      return /* tuple */[
+              i,
+              j
+            ];
     } else {
-      _i = i + 1 | 0;
-      continue ;
+      var colIndexInRange = i < (matrix.length - 1 | 0);
+      var rowIndexInRange = j < (matrix.length - 1 | 0);
+      if (colIndexInRange) {
+        if (rowIndexInRange) {
+          _i = i + 1 | 0;
+          continue ;
+        } else {
+          return ;
+        }
+      } else if (rowIndexInRange) {
+        _j = j + 1 | 0;
+        _i = 0;
+        continue ;
+      } else {
+        return ;
+      }
     }
   };
 }
 
 function getStartNodeCoords(board) {
-  var colIndex = {
-    contents: 0
-  };
-  var rowIndex = findInArray(board, 0, (function (col) {
-          var isInCol = findInArray(col, 0, (function (node) {
-                  var match = Caml_obj.caml_equal(node, /* StartNode */Block.__(4, [true]));
-                  if (match) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }));
-          if (isInCol !== undefined) {
-            colIndex.contents = isInCol;
-            return true;
-          } else {
-            return false;
-          }
-        }));
-  return /* tuple */[
-          rowIndex,
-          colIndex.contents
-        ];
+  return findInMatrix(board, 0, 0, (function (value) {
+                return Caml_obj.caml_equal(value, /* StartNode */Block.__(4, [true]));
+              }));
+}
+
+function getEndNodeCoords(board) {
+  return findInMatrix(board, 0, 0, (function (value) {
+                return Caml_obj.caml_equal(value, /* EndNode */Block.__(5, [true]));
+              }));
 }
 
 function Pathfinder(Props) {
@@ -116,8 +120,13 @@ function Pathfinder(Props) {
                   return createEmptyBoard(/* () */0);
                 }));
   };
-  var findStartNode = function (param) {
-    console.log(getStartNodeCoords(board));
+  var test = function (param) {
+    var startNode = getStartNodeCoords(board);
+    var endNode = getEndNodeCoords(board);
+    console.log(/* tuple */[
+          startNode,
+          endNode
+        ]);
     return /* () */0;
   };
   return React.createElement("div", {
@@ -125,7 +134,7 @@ function Pathfinder(Props) {
             }, React.createElement("div", undefined, React.createElement("button", {
                       onClick: resetBoard
                     }, "Reset board"), React.createElement("button", {
-                      onClick: findStartNode
+                      onClick: test
                     }, "Test")), React.createElement(Board$ReasonReactExamples.make, {
                   board: board,
                   setNodeStatus: setNodeStatus
@@ -143,7 +152,8 @@ exports.defaultBoardHeight = defaultBoardHeight;
 exports.defaultBoardWidth = defaultBoardWidth;
 exports.createEmptyBoard = createEmptyBoard;
 exports.updateNode = updateNode;
-exports.findInArray = findInArray;
+exports.findInMatrix = findInMatrix;
 exports.getStartNodeCoords = getStartNodeCoords;
+exports.getEndNodeCoords = getEndNodeCoords;
 exports.make = make;
 /* appContainer Not a pure module */
